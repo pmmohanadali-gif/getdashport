@@ -1,4 +1,5 @@
 (function() {
+
   // Privacy modal
   ['openPrivacy','openPrivacy2','openPrivacy3'].forEach(function(id) {
     var el = document.getElementById(id);
@@ -30,11 +31,13 @@
     var cp        = document.getElementById('consentPrivacy').checked;
 
     // Hide all errors and messages
-    document.querySelectorAll('.field-error').forEach(function(el) { el.style.display = 'none'; });
+    document.querySelectorAll('.field-error').forEach(function(el) {
+      el.style.display = 'none';
+    });
     document.getElementById('successMsg').style.display = 'none';
     document.getElementById('errorMsg').style.display   = 'none';
 
-    // Validate all fields
+    // Validate
     var valid = true;
 
     if (!name) {
@@ -67,23 +70,29 @@
     try {
       var res = await fetch('https://formspree.io/f/mojkojye', {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept':       'application/json'
+        },
         body: JSON.stringify({
-          name:                    name,
-          email:                   email,
-          role:                    role,
-          primary_platform:        platforms,
-          consent_to_contact:      true,
-          consent_to_privacy:      true,
-          submitted_at:            new Date().toISOString(),
-          source:                  'waitlist-page'
+          name:                 name,
+          email:                email,
+          role:                 role,
+          primary_platform:     platforms,
+          consent_to_contact:   true,
+          consent_to_privacy:   true,
+          submitted_at:         new Date().toISOString(),
+          source:               'waitlist-page'
         })
       });
 
       if (res.ok) {
-        document.getElementById('waitlistForm').style.display = 'none';
-        document.getElementById('successMsg').style.display   = 'block';
-        // GA4 conversion event
+        // Hide the entire form card content, show success
+        document.getElementById('waitlistForm').style.display    = 'none';
+        var successEl = document.getElementById('successMsg');
+        successEl.style.display = 'block';
+        successEl.style.marginTop = '0';
+        // GA4
         if (typeof gtag !== 'undefined') {
           gtag('event', 'waitlist_signup', {
             event_category: 'lead',
@@ -93,7 +102,7 @@
           });
         }
       } else {
-        throw new Error('Server error');
+        throw new Error('Server error ' + res.status);
       }
     } catch (err) {
       btn.disabled    = false;
@@ -101,4 +110,5 @@
       document.getElementById('errorMsg').style.display = 'block';
     }
   });
+
 })();

@@ -199,7 +199,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
           <p class="form-subtitle">Be among the first to access DashPort when we launch. We'll keep you updated on progress and give you early access before we go public.</p>
         </div>
 
-        <form id="waitlistForm" novalidate>
+        <form id="waitlistForm" novalidate onsubmit="return false;">
           <div class="field">
             <label for="name">Your name</label>
             <input type="text" id="name" name="name" placeholder="Ahmed Hassan" autocomplete="name">
@@ -246,9 +246,9 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
             <p class="field-error" id="consentError">Both boxes must be checked to continue.</p>
           </div>
           <button type="submit" id="submitBtn">Join the waitlist</button>
-          <div class="msg success" id="successMsg">You're on the list. We'll be in touch before launch with your early access details.</div>
-          <div class="msg error" id="errorMsg">Something went wrong. Please try again or email us directly.</div>
         </form>
+        <div class="msg success" id="successMsg">You're on the list. We'll be in touch before launch with your early access details.</div>
+        <div class="msg error" id="errorMsg">Something went wrong. Please try again or email us directly.</div>
       </div>
       <p class="privacy-note animate d7">No spam. No data selling. Unsubscribe anytime. &nbsp;&middot;&nbsp; <a href="#" id="openPrivacy2">Privacy Policy</a></p>
     </div>
@@ -295,6 +295,6 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
   </div>
 </div>
 
-<script src="app.js"></script>
+<script src="app.js" defer></script>
 </body>
 </html>
