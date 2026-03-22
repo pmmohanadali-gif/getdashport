@@ -83,8 +83,8 @@ button[type=submit]:hover{background:#a8191f}
 button[type=submit]:active{transform:scale(0.99)}
 button[type=submit]:disabled{background:rgba(193,39,45,0.35);cursor:not-allowed}
 .msg{display:none;font-size:14px;padding:14px 16px;border-radius:10px;margin-top:14px;line-height:1.5}
-.msg.success{display:block;background:rgba(0,166,81,0.08);border:1px solid rgba(0,166,81,0.25);color:#005c2a}
-.msg.error{display:block;background:rgba(193,39,45,0.07);border:1px solid rgba(193,39,45,0.2);color:var(--red)}
+.msg.success{display:none;background:rgba(0,166,81,0.08);border:1px solid rgba(0,166,81,0.25);color:#005c2a}
+.msg.error{display:none;background:rgba(193,39,45,0.07);border:1px solid rgba(193,39,45,0.2);color:var(--red)}
 .privacy-note{font-size:12px;color:var(--gray-light);text-align:center;line-height:1.7}
 .privacy-note a{color:var(--gray-mid);text-decoration:underline;text-underline-offset:2px}
 
@@ -240,7 +240,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
     <div class="form-card animate d5">
       <div class="form-header">
         <p class="form-title">Get early access</p>
-        <p class="form-subtitle">We're building in the open. Join the waitlist and get <strong>founding member pricing</strong> locked in before we launch publicly.</p>
+        <p class="form-subtitle">Be among the first to access DashPort when we launch. We'll keep you updated on progress and give you early access before we go public.</p>
       </div>
 
       <form id="waitlistForm" novalidate>
@@ -290,7 +290,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
           <p class="field-error" id="consentError">Both boxes must be checked to join the waitlist.</p>
         </div>
         <button type="submit" id="submitBtn">Join the waitlist</button>
-        <div class="msg success" id="successMsg">You're on the list. We'll be in touch before launch with your early access details and founding member pricing.</div>
+        <div class="msg success" id="successMsg">You're on the list. We'll be in touch before launch with your early access details.</div>
         <div class="msg error" id="errorMsg">Something went wrong. Please try again or email us at <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4c24292020230c2b2938282d3f243c233e38622f2321">[email&#160;protected]</a>.</div>
       </form>
     </div>
@@ -373,7 +373,7 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
     btn.disabled=true;btn.textContent='Submitting...';
 
     try{
-      const res=await fetch('https://formspree.io/f/REPLACE_WITH_YOUR_FORMSPREE_ID',{
+      const res=await fetch('https://formspree.io/f/mojkojye',{
         method:'POST',
         headers:{'Content-Type':'application/json','Accept':'application/json'},
         body:JSON.stringify({name,email,role,primary_platform:platforms,consent_to_contact:true,consent_to_privacy_policy:true,submitted_at:new Date().toISOString(),source:'waitlist-page'})
