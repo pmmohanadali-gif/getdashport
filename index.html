@@ -9,13 +9,43 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-37BV3FXSQF"></script>
+<!-- Google Analytics — consent gated -->
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-37BV3FXSQF');
+  // Set default consent state — denied until user accepts
+  gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    wait_for_update: 2000
+  });
+  window._ga_id = 'G-37BV3FXSQF';
+
+  function loadGA() {
+    var s = document.createElement('script');
+    s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + window._ga_id;
+    document.head.appendChild(s);
+    gtag('config', window._ga_id);
+  }
+
+  function grantConsent() {
+    gtag('consent', 'update', { analytics_storage: 'granted' });
+    loadGA();
+    localStorage.setItem('gdpr_consent', 'granted');
+  }
+
+  function denyConsent() {
+    gtag('consent', 'update', { analytics_storage: 'denied' });
+    localStorage.setItem('gdpr_consent', 'denied');
+  }
+
+  // If already consented previously — load GA immediately
+  (function() {
+    var stored = localStorage.getItem('gdpr_consent');
+    if (stored === 'granted') { loadGA(); }
+  })();
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -153,6 +183,77 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
   .wrapper{padding:0 16px}
   h1{font-size:28px}
   .form-card{padding:20px 16px}
+}
+
+/* ── GDPR CONSENT BANNER ── */
+.consent-banner{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:999;
+  background:var(--white);
+  border-top:1px solid var(--gray-border);
+  box-shadow:0 -4px 24px rgba(26,26,26,0.1);
+  padding:20px 24px;
+}
+.consent-banner.visible{display:block}
+.consent-banner-inner{
+  max-width:1100px;
+  margin:0 auto;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  flex-wrap:wrap;
+}
+.consent-text{
+  font-size:13px;
+  color:var(--gray-mid);
+  line-height:1.55;
+  flex:1;
+  min-width:200px;
+}
+.consent-text a{
+  color:var(--red);
+  text-decoration:none;
+  border-bottom:1px solid rgba(193,39,45,0.3);
+}
+.consent-text strong{
+  font-weight:600;
+  color:var(--gray-dark);
+}
+.consent-actions{
+  display:flex;
+  gap:10px;
+  flex-shrink:0;
+}
+.consent-btn{
+  height:38px;
+  padding:0 20px;
+  border-radius:8px;
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+  transition:background .2s,border-color .2s;
+  white-space:nowrap;
+}
+.consent-btn.accept{
+  background:var(--red);
+  color:#fff;
+  border:1.5px solid var(--red);
+}
+.consent-btn.accept:hover{background:#a8191f;border-color:#a8191f}
+.consent-btn.decline{
+  background:transparent;
+  color:var(--gray-mid);
+  border:1.5px solid var(--gray-border);
+}
+.consent-btn.decline:hover{background:var(--gray-surface);border-color:var(--gray-mid)}
+@media(max-width:600px){
+  .consent-banner-inner{flex-direction:column;align-items:flex-start;gap:16px}
+  .consent-actions{width:100%}
+  .consent-btn{flex:1;text-align:center}
 }
 </style>
 </head>
@@ -292,6 +393,20 @@ footer{padding:28px 0 40px;border-top:1px solid var(--gray-border);display:flex;
     <h3>Contact</h3>
     <p>&#104;&#101;&#108;&#108;&#111;&#64;&#103;&#101;&#116;&#100;&#97;&#115;&#104;&#112;&#111;&#114;&#116;&#46;&#99;&#111;&#109;</p>
     <button class="modal-close" id="closePrivacy">Close</button>
+  </div>
+</div>
+
+
+<!-- GDPR CONSENT BANNER -->
+<div class="consent-banner" id="consentBanner">
+  <div class="consent-banner-inner">
+    <p class="consent-text">
+      <strong>We use cookies.</strong> We use Google Analytics to understand how visitors use our site. No advertising cookies. No data selling. Read our <a href="#" id="openPrivacyBanner">Privacy Policy</a>.
+    </p>
+    <div class="consent-actions">
+      <button class="consent-btn decline" id="consentDecline">Decline</button>
+      <button class="consent-btn accept" id="consentAccept">Accept analytics</button>
+    </div>
   </div>
 </div>
 

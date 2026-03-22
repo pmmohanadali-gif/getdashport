@@ -1,6 +1,34 @@
 (function() {
 
-  // Privacy modal
+  // ── GDPR CONSENT BANNER ──────────────────────────────────────────────
+  var banner   = document.getElementById('consentBanner');
+  var stored   = localStorage.getItem('gdpr_consent');
+
+  // Show banner only if no decision stored yet
+  if (!stored) {
+    banner.classList.add('visible');
+  }
+
+  document.getElementById('consentAccept').addEventListener('click', function() {
+    banner.classList.remove('visible');
+    if (typeof grantConsent === 'function') grantConsent();
+  });
+
+  document.getElementById('consentDecline').addEventListener('click', function() {
+    banner.classList.remove('visible');
+    if (typeof denyConsent === 'function') denyConsent();
+  });
+
+  // Privacy link inside banner
+  var privacyBannerLink = document.getElementById('openPrivacyBanner');
+  if (privacyBannerLink) {
+    privacyBannerLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      document.getElementById('privacyModal').classList.add('open');
+    });
+  }
+
+  // ── PRIVACY MODAL ────────────────────────────────────────────────────
   ['openPrivacy','openPrivacy2','openPrivacy3'].forEach(function(id) {
     var el = document.getElementById(id);
     if (el) {
@@ -19,7 +47,7 @@
     if (e.target === this) this.classList.remove('open');
   });
 
-  // Form submission
+  // ── WAITLIST FORM ────────────────────────────────────────────────────
   document.getElementById('waitlistForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -30,14 +58,14 @@
     var cc        = document.getElementById('consentContact').checked;
     var cp        = document.getElementById('consentPrivacy').checked;
 
-    // Hide all errors and messages
+    // Reset all errors and messages
     document.querySelectorAll('.field-error').forEach(function(el) {
       el.style.display = 'none';
     });
     document.getElementById('successMsg').style.display = 'none';
     document.getElementById('errorMsg').style.display   = 'none';
 
-    // Validate
+    // Validate every field
     var valid = true;
 
     if (!name) {
@@ -75,24 +103,21 @@
           'Accept':       'application/json'
         },
         body: JSON.stringify({
-          name:                 name,
-          email:                email,
-          role:                 role,
-          primary_platform:     platforms,
-          consent_to_contact:   true,
-          consent_to_privacy:   true,
-          submitted_at:         new Date().toISOString(),
-          source:               'waitlist-page'
+          name:               name,
+          email:              email,
+          role:               role,
+          primary_platform:   platforms,
+          consent_to_contact: true,
+          consent_to_privacy: true,
+          submitted_at:       new Date().toISOString(),
+          source:             'waitlist-page'
         })
       });
 
       if (res.ok) {
-        // Hide the entire form card content, show success
-        document.getElementById('waitlistForm').style.display    = 'none';
-        var successEl = document.getElementById('successMsg');
-        successEl.style.display = 'block';
-        successEl.style.marginTop = '0';
-        // GA4
+        document.getElementById('waitlistForm').style.display = 'none';
+        document.getElementById('successMsg').style.display   = 'block';
+        // GA4 conversion event — only fires if user consented
         if (typeof gtag !== 'undefined') {
           gtag('event', 'waitlist_signup', {
             event_category: 'lead',
